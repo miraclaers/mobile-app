@@ -26,7 +26,7 @@ export function useCommunication() {
   });
 }
 
-async function sendCommunication(message: string) {
+async function communicationSubmit(message: string) {
   const token = await getToken();
   const patientId = await SecureStore.getItemAsync('patient_id');
   const isoString = new Date().toISOString();
@@ -64,9 +64,9 @@ async function sendCommunication(message: string) {
   if (Json?.issue?.length > 0) throw new Error(Json.issue[0].details.text);
 }
 
-export function useSendCommunication() {
+export function useCommunicationSubmit() {
   return useMutation({
-    mutationFn: (message: string) => sendCommunication(message),
+    mutationFn: (message: string) => communicationSubmit(message),
     onSuccess: () => router.push('records'),
     onError: (e) => {
       console.log(e);
