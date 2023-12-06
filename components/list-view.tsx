@@ -42,7 +42,7 @@ export function isImmunization(arg: any): arg is Immunization {
   return arg?.resource?.vaccineCode !== undefined;
 }
 
-export function isAllergy(arg: any): arg is Immunization {
+export function isAllergy(arg: any): arg is Allergy {
   return arg?.resource?.reaction !== undefined;
 }
 
