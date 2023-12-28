@@ -12,8 +12,9 @@ import {
 import { router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { useForm, Controller } from 'react-hook-form';
+import { useStateMachine } from 'little-state-machine';
 import { Button, Screen, Input } from '@components';
-import { useCreatePatient } from '@services';
+import { updateAction } from '@store';
 import { g } from '@styles';
 
 const s = StyleSheet.create({
@@ -67,8 +68,6 @@ type FormData = {
   firstName: string
   middleName: string
   lastName: string
-  phone: string
-  email: string
   gender: string
   birthSex: string
   birthDate: string
@@ -87,15 +86,13 @@ export default function PersonalDetails() {
       firstName: null,
       middleName: null,
       lastName: null,
-      phone: null,
-      email: null,
       gender: null,
       birthSex: null,
       birthDate: new Date().toISOString().slice(0, 10),
     },
     shouldFocusError: false,
   });
-  const { mutate: onCreatePatient, isPending } = useCreatePatient();
+  const { actions } = useStateMachine({ updateAction });
 
   return (
     <Screen>
@@ -207,73 +204,13 @@ export default function PersonalDetails() {
                           onFocus={() => clearErrors()}
                           onChange={onChange}
                           value={value}
-                          onSubmitEditing={() => setFocus('email')}
+                          onSubmitEditing={() => setFocus('gender')}
                           autoCapitalize="words"
                           keyboardType="default"
                           textContentType="familyName"
                           returnKeyType="next"
                           forwardedRef={ref}
                           error={errors.lastName}
-                        />
-                      )}
-                    />
-                    <Controller
-                      name="email"
-                      control={control}
-                      rules={{
-                        required: { value: true, message: 'Required' },
-                        validate: (value) => {
-                          const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                          if (!regex.test(value)) return 'Please enter a valid email address';
-                          return true;
-                        }
-                      }}
-                      render={({ field: { onChange, value, ref } }) => (
-                        <Input
-                          type="text"
-                          name="email"
-                          label="Email"
-                          placeholder="Enter your email"
-                          onFocus={() => clearErrors()}
-                          onChange={onChange}
-                          value={value}
-                          onSubmitEditing={() => setFocus('phone')}
-                          autoCapitalize="none"
-                          keyboardType="email-address"
-                          textContentType="emailAddress"
-                          returnKeyType="next"
-                          forwardedRef={ref}
-                          error={errors.email}
-                        />
-                      )}
-                    />
-                    <Controller
-                      name="phone"
-                      control={control}
-                      rules={{
-                        required: { value: true, message: 'Required' },
-                        validate: (value) => {
-                          const regex = /^\(\d{3}\) \d{3}-\d{4}$/;
-                          if (!regex.test(value)) return 'Please enter a valid phone number';
-                          return true;
-                        }
-                      }}
-                      render={({ field: { onChange, value, ref } }) => (
-                        <Input
-                          type="text"
-                          name="phone"
-                          label="Phone"
-                          placeholder="Enter your phone number"
-                          onFocus={() => clearErrors()}
-                          onChange={onChange}
-                          value={value}
-                          onSubmitEditing={() => null}
-                          autoCapitalize="none"
-                          keyboardType="phone-pad"
-                          textContentType="telephoneNumber"
-                          returnKeyType="next"
-                          forwardedRef={ref}
-                          error={errors.phone}
                         />
                       )}
                     />
@@ -353,8 +290,11 @@ export default function PersonalDetails() {
                     />
                   </View>
                   <Button
-                    onPress={handleSubmit((data) => onCreatePatient(data))}
-                    label={isPending ? 'Registering...' : 'Register'}
+                    onPress={handleSubmit((data: any) => {
+                      actions.updateAction(data);
+                      router.push('contact-information');
+                    })}
+                    label="Continue"
                     theme="primary"
                   />
                 </View>
