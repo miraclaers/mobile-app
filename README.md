@@ -66,5 +66,4 @@ npx expo start --dev-client
 <a href="https://brewerdigital.com/">
   <img align="left" width="33%" src="https://github.com/canvas-medical/mobile-patient-app/blob/main/assets/readme/brewer-digital-logo.jpg"/>
 </a>
-
 With over four decades of collective industry experience, our team specializes in software development for healthcare startups. Having worked with over 50 different companies, we provide the experience to bring your ideas to life.
